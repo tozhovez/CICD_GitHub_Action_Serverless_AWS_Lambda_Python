@@ -1,0 +1,69 @@
+org: oksanatozhovez
+app: aws-python-http-api-app
+service: aws-python-http-api-app
+#${opt:stage} = dev-etl-rds-to-athena
+# app and org for use with dashboard.serverless.com
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+frameworkVersion: '2'
+configValidationMode: off
+disabledDeprecations: # Disable deprecation logs by their codes. Default is empty.
+  #- DEP_CODE_1
+  - "*"
+plugins:
+  - serverless-python-requirements
+  - serverless-offline
+  - serverless-plugin-include-dependencies
+  - serverless-pseudo-parameters
+
+custom:
+  includeDependencies:
+    enableCaching: true
+  pythonRequirements:
+    slim: true
+    layer: true
+  configfile: ${file(./configs-${opt:stage}.yml)}
+
+provider:
+  name: aws
+  runtime: python3.8
+  lambdaHashingVersion: 20201221
+  stage: ${opt:stage}
+  # you can overwrite defaults here
+  region: eu-west-1
+  profile: default
+  timeout: 840
+  memorySize: 3008
+  logRetentionInDays: 14
+  stackName: aws-python-${opt:stage}
+  versionFunctions: false
+  environment:
+    CONFIGS_FILE: ./configs-${opt:stage}.yml
+
+functions:
+  hello:
+    name: aws-python-${opt:stage}-hello
+    description: "serverless lambda triggered by events bridge and invoke lambda hello"
+    handler: handler.hello
+    layers:
+      - { Ref: PythonRequirementsLambdaLayer }
+    memorySize: 3008
+    timeout: 840
+    events:
+      - httpApi:
+          path: /
+          method: get
+  environment:
+      CONFIGS_FILE: ./configs-${opt:stage}.yml
+      
+package:
+  excludeDevDependencies: true
+  patterns:
+    - '!node_modules/**'
+    - '!tests/**'
+    - '!.vscode/**'
+    - '!setup.sh'
+    - '!queries/**'
+    - '!queries-monthly/**'
+    - '!.pytest_cache/**'
+    - '!tests_output/**'

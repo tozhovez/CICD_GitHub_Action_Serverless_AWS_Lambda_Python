@@ -1,0 +1,9 @@
+pendulum
+pyathena
+aiohttp
+PyYAML
+requests
+aiofile
+mysql-connector-python
+smart-open
+ujson

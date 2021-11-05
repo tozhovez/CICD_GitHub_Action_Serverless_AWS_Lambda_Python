@@ -1,0 +1,23 @@
+export_role: rds-s3-export-role
+rdsdb: dev-rds
+s3bucket: dev-transactional
+
+s3bucketsocialdata: social-apis
+functions_prefix: dev-data
+region: eu-west-1
+aws_function_next_task: call-executor-next-task
+
+
+queries_store: github
+github_token_secretname: github-token-secretname
+github_auth_username: github_auth_username
+github_auth_tocken: github_auth_tocken
+
+github_owner: 
+github_repo: analytics
+github_path: 
+github_path_monthly: 
+github_branch: dev
+ 
+
+dump_data: false 
